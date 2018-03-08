@@ -1,0 +1,9 @@
+ 
+ It is a 3d adventure game  where the player is in a boat and uses it to destroy enemies and gain coins and different things like barrel,mosters,wind are there.
+
+ Controls:
+
+ 1. Right arrow key -> make boat turen right
+ 2. Left arrow Key -> move boat turn left
+ 3. Up arrow key  -> move boat forwards 
+ 4. key 'v' -> change the views of the camera.
