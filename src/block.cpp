@@ -1,5 +1,6 @@
 #include "block.h"
 #include "main.h"
+
 Block::Block(float x, float y, color_t color) {
     this->position = glm::vec3(x, 0, y);
     this->rotation = 0;

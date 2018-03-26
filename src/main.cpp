@@ -8,6 +8,8 @@
 #include "gift.h"
 #include "barrel_gift.h"
 #include "barrel.h"
+#include "island.h"
+#include "island_fireball.h"
 #include <math.h>
 #define nl "\n"
 using namespace std;
@@ -48,8 +50,11 @@ Fireball fireball;
 Block  blocks[123];
 Enemy enemy[15];
 Gift gift[15];
+Gift island_gift[6];
 Barrel_gift barrel_gift[4];
 Barrel barrel[4];
+Island island;
+Island_Fireball island_boat;
 
 float eye_x,eye_y,eye_z,target_x,target_y,target_z,helx,hely,helz,hx,hy,hz;
 double x,y;
@@ -161,7 +166,10 @@ void draw()
     glm::mat4 MVP;  // MVP = Projection * View * Model
 
     // Scene render
-    boat.draw(VP);
+    if(boat.position.x>100 && boat.position.x<140 && boat.position.z>100 && boat.position.z<140)
+        island_boat.draw(VP);
+    else
+        boat.draw(VP);
     sea.draw(VP);
     for(int i=0;i<15;i++)
     {
@@ -174,6 +182,8 @@ void draw()
     {
         blocks[i].draw(VP);
     }
+    island.draw(VP);
+    // island_boat.draw(VP);
     // for(int i=0;i<4;i++)
     // {
     //     barrel_gift[i].draw(VP);
@@ -183,7 +193,10 @@ void draw()
         barrel[i].draw(VP);
         barrel_gift[i].draw(VP);
     }
-
+    for(int i=0;i<6;i++)
+    {
+        island_gift[i].draw(VP);
+    }
 }
 void tick_input(GLFWwindow *window) 
 {
@@ -254,7 +267,9 @@ void tick_elements()
     glfwGetCursorPos(window,&x,&y);
     int cnt=0;
     int cnt2=0;
-
+    island_boat.position.x=boat.position.x;
+    island_boat.position.z=boat.position.z;
+    island_boat.position.y=boat.position.y;
     if(healthpoints<=0)
     {
         glfwSetWindowTitle(window,"GAME OVER");
@@ -266,6 +281,7 @@ void tick_elements()
 
     if(boat.position.y<=-0.1 && boat.position.y>=-0.2 && boat.speedy<0)
         boat.accy=0.001;
+    // if(boat.position.x>100 && boat.position.x<140 && boat.position.x)
     if(boat.position.y<=-0.2)
     {
         // cout<<"Dada";
@@ -286,6 +302,7 @@ void tick_elements()
             healthpoints-=20;
         }
     }
+
     for(int i=0;i<4;i++)
     {
         barrel_gift[i].tick();
@@ -321,6 +338,15 @@ void tick_elements()
             float r2 = -100 +((float)rand() / (float)RAND_MAX)*200;
             barrel[i]=Barrel(r1,r2,COLOR_white);
             // }
+        }
+    }
+    for(int i=0;i<6;i++)
+    {
+        double r3=sqrt((island_gift[i].position.x-boat.position.x)*(island_gift[i].position.x-boat.position.x)+(island_gift[i].position.z-boat.position.z)*(island_gift[i].position.z-boat.position.z));
+        if(r3<3)
+        {
+            healthpoints+=rand()%103;
+            island_gift[i].position.x=-102121;
         }
     }
     for(int i=0;i<15;i++)
@@ -380,6 +406,8 @@ void tick_elements()
                 enemy[i]=Enemy(r1,r2,COLOR_white);
             else
             {
+                r1=10;
+                r2=10;
                 // if(boostflag==0)
                     // time_boostflag=tt.elapsedTime();
                 // boostflag=1;
@@ -426,7 +454,10 @@ void tick_elements()
     glfwSetWindowTitle(window,outstring);
     // cout<<cnt<<nl;
     // cout<<boat.position.x<<"\n";
-    fireball.tick(camera_rotation_angle);
+    float vall=0.2;
+    if(boostflag==1 && tt.elapsedTime()<time_boostflag+5)
+        vall=0.8;
+    fireball.tick(camera_rotation_angle,vall);
     // if(fireball.position)
 
     double r3=sqrt((boat.position.x-fireball.position.x)*(boat.position.x-fireball.position.x)+(boat.position.z-fireball.position.z)*(boat.position.z-fireball.position.z));
@@ -443,6 +474,8 @@ void initGL(GLFWwindow *window, int width, int height)
     int x1=0,y1=0;
     boat=Ball(x1,y1,COLOR_CRIMSON);
     sea=Sea(x1,y1,COLOR_LBLUE);
+    island=Island(x1,y1,COLOR_LBLUE);
+    island_boat=Island_Fireball(123456,123456,COLOR_BLACK);
     fireball=Fireball(-10000000,0,COLOR_BROWN);
     for(int i=0;i<15;i++)
     {
@@ -450,6 +483,12 @@ void initGL(GLFWwindow *window, int width, int height)
         float r2 = -100 +((float)rand() / (float)RAND_MAX)*200;
         enemy[i]=Enemy(r1,r2,COLOR_white);
         gift[i]=Gift(-100000,r2,COLOR_purple);
+    }
+    for(int i=0;i<6;i++)
+    {
+        float r1 = 100 +((float)rand() / (float)RAND_MAX)*30;
+        float r2 = 100 +((float)rand() / (float)RAND_MAX)*30;
+        island_gift[i]=Gift(r1,r2,COLOR_pila);
     }
     for(int i=0;i<4;i++)
     {
@@ -533,7 +572,7 @@ int main(int argc, char **argv)
     }
 
     quit(window);
-}
+}   
 
 
 void view_change()

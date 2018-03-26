@@ -1,13 +1,13 @@
 #include "main.h"
 
-#ifndef FIREBALL_H
-#define FIREBALL_H
+#ifndef ISLAND_FIREBALL_H
+#define ISLAND_FIREBALL_H
 
 
-class Fireball {
+class Island_Fireball {
 public:
-    Fireball() {}
-    Fireball(float x, float y, color_t color);
+    Island_Fireball() {}
+    Island_Fireball(float x, float y, color_t color);
     glm::vec3 position;
     float rotation;
     void draw(glm::mat4 VP);
@@ -20,4 +20,4 @@ private:
     VAO *object;
 };
 
-#endif // BALENEMY
+#endif 

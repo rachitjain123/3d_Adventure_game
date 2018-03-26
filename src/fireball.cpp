@@ -73,9 +73,9 @@ void Fireball::set_position(float x, float z) {
     this->position = glm::vec3(x, 0, z);
 }
 
-void Fireball::tick(float camera_rotation_angle) 
+void Fireball::tick(float camera_rotation_angle,float val) 
 {
-    this->position.z-=0.2*sin((M_PI/180)*camera_rotation_angle);
-    this->position.x-=0.2*cos((M_PI/180)*camera_rotation_angle);
+    this->position.z-=val*sin((M_PI/180)*camera_rotation_angle);
+    this->position.x-=val*cos((M_PI/180)*camera_rotation_angle);
 }
 
